@@ -1,0 +1,6 @@
+package com.yogeshwaran.order_tracking_system.repository;
+
+import com.yogeshwaran.order_tracking_system.entity.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProductRepository extends JpaRepository<Product, Long> {}
