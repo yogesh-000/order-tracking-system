@@ -1,9 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { Auth } from '../../core/auth';
 
 @Component({
-  imports: [],
   selector: 'app-home',
-  styleUrl: './home.css',
+  imports: [],
   templateUrl: './home.html',
+  styleUrl: './home.css',
 })
-export class Home {}
+export class Home implements OnInit {
+  private auth = inject(Auth);
+  private router = inject(Router);
+
+  ngOnInit() {
+    if (this.auth.getRole() === 'ADMIN') {
+      this.router.navigate(['/admin-products']);
+    } else {
+      this.router.navigate(['/shop']);
+    }
+  }
+}

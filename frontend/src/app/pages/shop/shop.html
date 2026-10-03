@@ -1,0 +1,45 @@
+<div class="header">
+  <h2>Menu</h2>
+  <div class="actions">
+    <a routerLink="/my-orders">My Orders</a>
+    <button (click)="auth.logout()">Logout</button>
+  </div>
+</div>
+
+@if (message()) { <div class="ok">{{ message() }}</div> }
+@if (error()) { <div class="bad">{{ error() }}</div> }
+
+<div class="layout">
+  <div class="grid">
+    @for (p of products(); track p.id) {
+      <div class="product-card">
+        <h3>{{ p.name }}</h3>
+        <p class="desc">{{ p.description }}</p>
+        <div class="row">
+          <span class="price">₹{{ p.price }}</span>
+          <button (click)="cart.add(p)">Add</button>
+        </div>
+      </div>
+    } @empty {
+      <p>No products available right now.</p>
+    }
+  </div>
+
+  <aside class="cart">
+    <h3>Cart</h3>
+    @for (line of cart.lines(); track line.product.id) {
+      <div class="cart-line">
+        <span>{{ line.product.name }} × {{ line.quantity }}</span>
+        <button class="remove" (click)="cart.remove(line.product.id)">✕</button>
+      </div>
+    } @empty {
+      <p class="empty">Your cart is empty.</p>
+    }
+    @if (cart.lines().length > 0) {
+      <div class="total">Total: ₹{{ cart.total() }}</div>
+      <button class="primary" [disabled]="placing()" (click)="placeOrder()">
+        {{ placing() ? 'Placing...' : 'Place Order' }}
+      </button>
+    }
+  </aside>
+</div>

@@ -22,23 +22,26 @@ export class Login {
   error = signal('');
   loading = signal(false);
 
-  submit() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-    this.loading.set(true);
-    this.error.set('');
-
-    const { username, password } = this.form.getRawValue();
-    this.auth.login(username, password).subscribe({
-      next: () => this.router.navigate(['/']),
-      error: (err) => {
-        this.loading.set(false);
-        this.error.set(
-          err.status === 0 ? 'Cannot reach the server.' : 'Invalid username or password.'
-        );
-      },
-    });
+submit() {
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    return;
   }
+  this.loading.set(true);
+  this.error.set('');
+
+  const { username, password } = this.form.getRawValue();
+  this.auth.login(username, password).subscribe({
+    next: () => {
+      this.loading.set(false);
+      this.router.navigate(['/home']);
+    },
+    error: (err) => {
+      this.loading.set(false);
+      this.error.set(
+        err.status === 0 ? 'Cannot reach the server.' : 'Invalid username or password.'
+      );
+    },
+  });
+}
 }

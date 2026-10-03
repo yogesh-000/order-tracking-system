@@ -3,16 +3,19 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Api } from '../../core/api';
 import { Product } from '../../core/models';
 import { errMsg } from '../../core/error-message';
+import { Auth } from '../../core/auth';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-admin-products',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './admin-products.html',
   styleUrl: './admin-products.css',
 })
 export class AdminProducts implements OnInit {
   private api = inject(Api);
   private fb = inject(FormBuilder);
+  auth = inject(Auth);
 
   products = signal<Product[]>([]);
   page = signal(0);

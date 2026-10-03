@@ -1,0 +1,21 @@
+<h2>My Orders</h2>
+@if (error()) { <div class="bad">{{ error() }}</div> }
+
+@for (o of orders(); track o.id) {
+  <div class="order-card">
+    <a class="order-head" [routerLink]="['/orders', o.id]">
+      <div class="order-head">
+        <span>Order #{{ o.id }} — {{ o.placedAt | date: 'dd MMM, HH:mm' }}</span>
+        <span class="badge" [class]="o.status">{{ o.status }}</span>
+      </div>
+    </a>
+    <ul>
+      @for (item of o.items; track item.productName) {
+        <li>{{ item.productName }} × {{ item.quantity }} — ₹{{ item.priceAtOrder }}</li>
+      }
+    </ul>
+    <div class="total">Total: ₹{{ o.totalAmount }}</div>
+  </div>
+} @empty {
+  <p>No orders yet.</p>
+}

@@ -1,0 +1,33 @@
+<a routerLink="/my-orders">← Back to orders</a>
+
+@if (error()) { <div class="bad">{{ error() }}</div> }
+
+@if (order(); as o) {
+  <h2>Order #{{ o.id }}</h2>
+  <p>Placed {{ o.placedAt | date: 'dd MMM yyyy, HH:mm' }}</p>
+
+  @if (o.status === 'CANCELLED') {
+    <div class="cancelled">This order was cancelled.</div>
+  } @else {
+    <div class="stepper">
+      @for (step of steps; track step; let i = $index) {
+        <div class="step" [class.done]="stepIndex(o.status) >= i" [class.current]="stepIndex(o.status) === i">
+          <div class="dot"></div>
+          <span>{{ step }}</span>
+        </div>
+      }
+    </div>
+    @if (canCancel(o.status)) {
+  <button class="cancel-btn" [disabled]="cancelling()" (click)="cancelOrder()">
+    {{ cancelling() ? 'Cancelling...' : 'Cancel Order' }}
+  </button>
+}
+  }
+
+  <ul class="items">
+    @for (item of o.items; track item.productName) {
+      <li>{{ item.productName }} × {{ item.quantity }} — ₹{{ item.priceAtOrder }}</li>
+    }
+  </ul>
+  <div class="total">Total: ₹{{ o.totalAmount }}</div>
+}

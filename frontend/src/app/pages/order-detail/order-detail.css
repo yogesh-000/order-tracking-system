@@ -1,0 +1,11 @@
+.stepper { display: flex; justify-content: space-between; margin: 24px 0; }
+.step { display: flex; flex-direction: column; align-items: center; flex: 1; font-size: 12px; color: #94a3b8; }
+.dot { width: 16px; height: 16px; border-radius: 50%; background: #e2e8f0; margin-bottom: 6px; }
+.step.done .dot { background: #16a34a; }
+.step.current .dot { background: #2563eb; box-shadow: 0 0 0 4px #dbeafe; }
+.step.done, .step.current { color: #1e293b; font-weight: 600; }
+.cancelled { background: #fee2e2; color: #b91c1c; padding: 12px; border-radius: 8px; margin: 16px 0; }
+.items { margin: 20px 0 8px; padding-left: 20px; }
+.total { font-weight: 700; }
+.bad { background: #fee2e2; color: #b91c1c; padding: 10px; border-radius: 6px; margin: 12px 0; }.cancel-btn { padding: 8px 16px; border: 1px solid #fca5a5; border-radius: 6px; background: #fff; color: #b91c1c; cursor: pointer; margin-bottom: 16px; }
+.cancel-btn:disabled { opacity: .6; cursor: not-allowed; }

@@ -1,8 +1,12 @@
 <div class="toolbar">
+  <a routerLink="/admin-orders">Orders</a>
   <h2>Products</h2>
-  <button class="primary" (click)="showForm() ? showForm.set(false) : openAdd()">
-    {{ showForm() ? 'Close' : '+ Add Product' }}
-  </button>
+  <div class="toolbar-actions">
+    <button class="primary" (click)="showForm() ? showForm.set(false) : openAdd()">
+      {{ showForm() ? 'Close' : '+ Add Product' }}
+    </button>
+    <button (click)="auth.logout()">Logout</button>
+  </div>
 </div>
 
 @if (message()) { <div class="ok">{{ message() }}</div> }

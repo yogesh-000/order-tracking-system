@@ -1,0 +1,5 @@
+.order-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 12px; }
+.order-head { display: flex; justify-content: space-between; margin-bottom: 8px; text-decoration: none; color: inherit; }
+.badge { padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: #fef9c3; color: #854d0e; }
+.total { font-weight: 700; margin-top: 8px; }
+.bad { background: #fee2e2; color: #b91c1c; padding: 10px; border-radius: 6px; } 

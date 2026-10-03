@@ -1,0 +1,42 @@
+<div class="toolbar">
+  <h2>Orders</h2>
+  <div class="actions">
+    <select (change)="setFilter($any($event.target).value)">
+      @for (s of statuses; track s) { <option [value]="s">{{ s || 'All' }}</option> }
+    </select>
+    <button (click)="auth.logout()">Logout</button>
+  </div>
+</div>
+
+@if (error()) { <div class="bad">{{ error() }}</div> }
+
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>#</th><th>Placed</th><th>Items</th><th>Total</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      @for (o of orders(); track o.id) {
+        <tr>
+          <td>{{ o.id }}</td>
+          <td>{{ o.placedAt | date: 'dd MMM, HH:mm' }}</td>
+          <td>
+            @for (item of o.items; track item.productName) {
+              <div>{{ item.productName }} × {{ item.quantity }}</div>
+            }
+          </td>
+          <td>₹{{ o.totalAmount }}</td>
+          <td><span class="badge" [class]="o.status">{{ o.status }}</span></td>
+          <td class="row-actions">
+            @if (nextStatus(o.status); as next) {
+              <button class="primary" (click)="advance(o)">→ {{ next }}</button>
+            }
+            @if (o.status === 'PLACED' || o.status === 'CONFIRMED') {
+              <button class="danger" (click)="cancel(o)">Cancel</button>
+            }
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="6">No orders found.</td></tr>
+      }
+    </tbody>
+  </table>
+</div>
