@@ -4,6 +4,7 @@ import com.yogeshwaran.order_tracking_system.dto.order.*;
 import com.yogeshwaran.order_tracking_system.entity.*;
 import com.yogeshwaran.order_tracking_system.exception.BusinessValidationException;
 import com.yogeshwaran.order_tracking_system.exception.ResourceNotFoundException;
+import com.yogeshwaran.order_tracking_system.repository.CartRepository;
 import com.yogeshwaran.order_tracking_system.repository.OrderRepository;
 import com.yogeshwaran.order_tracking_system.repository.ProductRepository;
 import com.yogeshwaran.order_tracking_system.security.SecurityUtils;
@@ -28,11 +29,15 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final SecurityUtils securityUtils;
     private final SimpMessagingTemplate messagingTemplate;
+    private final CartRepository cartRepository;
 
     @Override
     @Transactional
-    public OrderResponse placeOrder(PlaceOrderRequest request) {
+    public OrderResponse placeOrder() {
         User customer = securityUtils.getCurrentUser();
+        Cart cart = cartRepository.findByCustomer_Id(customer.getId())
+                .filter(c -> !c.getItems().isEmpty())
+                .orElseThrow(() -> new BusinessValidationException("Your cart is empty."));
 
         Order order = new Order();
         order.setCustomer(customer);
@@ -40,28 +45,28 @@ public class OrderServiceImpl implements OrderService {
         List<OrderItem> items = new ArrayList<>();
         BigDecimal total = BigDecimal.ZERO;
 
-        for (OrderItemRequest line : request.getItems()) {
-            Product product = productRepository.findById(line.getProductId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Product not found."));
-
+        for (CartItem line : cart.getItems()) {
+            Product product = line.getProduct();
             if (!product.isAvailable()) {
                 throw new BusinessValidationException(product.getName() + " is currently unavailable.");
             }
-
             OrderItem item = new OrderItem();
             item.setOrder(order);
             item.setProduct(product);
             item.setQuantity(line.getQuantity());
             item.setPriceAtOrder(product.getPrice());
             items.add(item);
-
             total = total.add(product.getPrice().multiply(BigDecimal.valueOf(line.getQuantity())));
         }
 
         order.setItems(items);
         order.setTotalAmount(total);
+        OrderResponse response = OrderMapper.toResponse(orderRepository.save(order));
 
-        return OrderMapper.toResponse(orderRepository.save(order));
+        cart.getItems().clear();
+        cartRepository.save(cart);
+
+        return response;
     }
 
     @Override

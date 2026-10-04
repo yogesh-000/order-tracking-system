@@ -1,9 +1,7 @@
 package com.yogeshwaran.order_tracking_system.controller;
 
 import com.yogeshwaran.order_tracking_system.dto.order.OrderResponse;
-import com.yogeshwaran.order_tracking_system.dto.order.PlaceOrderRequest;
 import com.yogeshwaran.order_tracking_system.service.OrderService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +16,8 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public OrderResponse placeOrder(@Valid @RequestBody PlaceOrderRequest request) {
-        return orderService.placeOrder(request);
+    public OrderResponse placeOrder() {
+        return orderService.placeOrder();
     }
 
     @GetMapping("/my")
