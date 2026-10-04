@@ -22,31 +22,29 @@ export class Shop implements OnInit {
   error = signal('');
   placing = signal(false);
 
-  ngOnInit() {
-    this.api.getAvailableProducts(0, 50).subscribe({
-      next: (p) => this.products.set(p.content),
-      error: (err) => this.error.set(errMsg(err)),
-    });
-  }
+ngOnInit() {
+  this.api.getAvailableProducts(0, 50).subscribe({
+    next: (p) => this.products.set(p.content),
+    error: (err) => this.error.set(errMsg(err)),
+  });
+  this.cart.load();
+}
 
-  placeOrder() {
-    if (this.cart.lines().length === 0) return;
-    this.placing.set(true);
-    const body = {
-      items: this.cart.lines().map((l) => ({ productId: l.product.id, quantity: l.quantity })),
-    };
-    this.api.placeOrder(body).subscribe({
-      next: () => {
-        this.placing.set(false);
-        this.message.set('Order placed!');
-        this.error.set('');
-        this.cart.clear();
-      },
-      error: (err) => {
-        this.placing.set(false);
-        this.message.set('');
-        this.error.set(errMsg(err));
-      },
-    });
-  }
+placeOrder() {
+  if (this.cart.lines().length === 0) return;
+  this.placing.set(true);
+  this.api.placeOrder().subscribe({
+    next: () => {
+      this.placing.set(false);
+      this.message.set('Order placed!');
+      this.error.set('');
+      this.cart.clearLocal();
+    },
+    error: (err) => {
+      this.placing.set(false);
+      this.message.set('');
+      this.error.set(errMsg(err));
+    },
+  });
+}
 }

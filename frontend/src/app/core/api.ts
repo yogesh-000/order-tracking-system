@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { OrderResponse, Page, Product, ProductRequest, PlaceOrderRequest } from './models';
+import { OrderResponse, Page, Product, ProductRequest, CartResponse } from './models';
 
 @Injectable({ providedIn: 'root' })
 export class Api {
@@ -33,10 +33,6 @@ export class Api {
   return this.http.get<Page<Product>>(`${this.base}/products`, { params });
 }
 
-placeOrder(body: PlaceOrderRequest) {
-  return this.http.post<OrderResponse>(`${this.base}/orders`, body);
-}
-
 getMyOrders() {
   return this.http.get<OrderResponse[]>(`${this.base}/orders/my`);
 }
@@ -53,5 +49,23 @@ updateOrderStatus(id: number, status: string) {
 
 cancelMyOrder(id: number) {
   return this.http.put<OrderResponse>(`${this.base}/orders/${id}/cancel`, {});
+}
+
+getCart() {
+  return this.http.get<CartResponse>(`${this.base}/cart`);
+}
+addToCart(productId: number) {
+  return this.http.post<CartResponse>(`${this.base}/cart/items/${productId}`, {});
+}
+removeFromCart(productId: number) {
+  return this.http.delete<CartResponse>(`${this.base}/cart/items/${productId}`);
+}
+
+decreaseCartItem(productId: number) {
+  return this.http.put<CartResponse>(`${this.base}/cart/items/${productId}/decrease`, {});
+}
+
+placeOrder() {
+  return this.http.post<OrderResponse>(`${this.base}/orders`, {});
 }
 }

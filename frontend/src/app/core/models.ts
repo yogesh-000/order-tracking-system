@@ -29,8 +29,6 @@ export interface LoginResponse {
   role: 'ADMIN' | 'CUSTOMER';
 }
 
-export interface OrderItemRequest { productId: number; quantity: number; }
-export interface PlaceOrderRequest { items: OrderItemRequest[]; }
 export interface OrderItemResponse { productName: string; quantity: number; priceAtOrder: number; }
 export interface OrderResponse {
   id: number;
@@ -42,3 +40,6 @@ export interface OrderResponse {
 
 export interface CartLine { product: Product; quantity: number; }
 export const STATUS_FLOW = ['PLACED', 'CONFIRMED', 'PREPARING', 'OUT_FOR_DELIVERY', 'DELIVERED'] as const;
+
+export interface CartLine { productId: number; name: string; price: number; quantity: number; }
+export interface CartResponse { items: CartLine[]; total: number; }

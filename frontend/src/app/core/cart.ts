@@ -1,30 +1,31 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { Api } from './api';
 import { CartLine, Product } from './models';
 
 @Injectable({ providedIn: 'root' })
 export class Cart {
+  private api = inject(Api);
+
   lines = signal<CartLine[]>([]);
+  total = computed(() => this.lines().reduce((s, l) => s + l.price * l.quantity, 0));
 
-  total = computed(() =>
-    this.lines().reduce((sum, l) => sum + l.product.price * l.quantity, 0)
-  );
-
-  add(product: Product) {
-    const existing = this.lines().find((l) => l.product.id === product.id);
-    if (existing) {
-      this.lines.update((lines) =>
-        lines.map((l) => (l.product.id === product.id ? { ...l, quantity: l.quantity + 1 } : l))
-      );
-    } else {
-      this.lines.update((lines) => [...lines, { product, quantity: 1 }]);
-    }
+  load() {
+    this.api.getCart().subscribe({ next: (c) => this.lines.set(c.items) });
   }
+
+add(productId: number) {
+  this.api.addToCart(productId).subscribe({ next: (c) => this.lines.set(c.items) });
+}
 
   remove(productId: number) {
-    this.lines.update((lines) => lines.filter((l) => l.product.id !== productId));
+    this.api.removeFromCart(productId).subscribe({ next: (c) => this.lines.set(c.items) });
   }
 
-  clear() {
+  decrease(productId: number) {
+  this.api.decreaseCartItem(productId).subscribe({ next: (c) => this.lines.set(c.items) });
+}
+
+  clearLocal() {
     this.lines.set([]);
   }
 }

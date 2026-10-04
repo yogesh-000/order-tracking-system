@@ -35,6 +35,11 @@
     <tbody>
       @for (p of products(); track p.id) {
         <tr>
+                <td>
+        @if (p.imageUrl) {
+          <img class="row-thumb" [src]="p.imageUrl" [alt]="p.name" (error)="$any($event.target).style.display='none'" />
+        }
+      </td>
           <td>{{ p.name }}</td>
           <td>₹{{ p.price }}</td>
           <td>
